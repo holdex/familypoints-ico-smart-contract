@@ -1,4 +1,7 @@
 # Familypoints.io Smart Contracts
+[![](logo-red.png)](https://familypoints.io)
+
+[Visit out website at familypoints.io](https://familypoints.io)
 
 ### The project based on OpenZeppelin smart contract added into repository (OpenZeppelin 1.3.0)
 

@@ -12,7 +12,7 @@ contract FamilyPointsToken is TokenInterface, StandardToken, OnlyAllowedAddresse
     event Burn(address indexed tokensOwner, address indexed burner, uint256 value);
 
     function FamilyPointsToken() {
-        totalSupply = uint256(225 * 10 ** (6 + 18));
+        totalSupply = uint256(500 * 10 ** (6 + 18));
         balances[msg.sender] = totalSupply;
     }
 

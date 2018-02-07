@@ -66,8 +66,8 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
     /** Tokens cap for every stage */
     uint256 public tokenStagePurchaseCap = 0;
 
-    /** A total tokens cap for the CrowdSale. A 65% from the total issue (225M) with 18 token decimals */
-    uint256 public tokenTotalPurchaseCap = 146250000 * 10 ** 18;
+    /** A total tokens cap for the CrowdSale. A 65% from the total issue (500M) with 18 token decimals */
+    uint256 public tokenTotalPurchaseCap = 325000000 * 10 ** 18;
 
     /** A minimal value to invest in WEI. Applied only when greater than zero/ */
     uint256 public minimalInvestmentInWei = 0;

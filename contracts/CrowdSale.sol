@@ -265,8 +265,6 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
             //Update counters
             tokensBonusSent = tokensBonusSent.add(leaderBonus);
             tokenBonusSentOf[_leader] = tokenBonusSentOf[_leader].add(leaderBonus);
-
-            token.transferFrom(owner, _leader, leaderBonus);
         }
     }
 

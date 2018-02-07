@@ -141,9 +141,6 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
         tokensSold = tokensSold.add(baseTokenAmount);
         tokensBonusSent = tokensBonusSent.add(tokenBonus);
 
-        //Assign tokens
-        assignTokens(receiver, baseTokenAmount, tokenBonus);
-
         //Send ether to RefundVault
         forwardFunds(weiAmount);
 
@@ -303,12 +300,5 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
      */
     function forwardFunds(uint256 _weiAmount) internal {
         wallet.transfer(_weiAmount);
-    }
-
-    /**
-     * @dev Assign tokens to the investor
-     */
-    function assignTokens(address _receiver, uint256 _tokenAmount, uint256 _tokenBonusAmount) internal {
-        token.transferFrom(owner, _receiver, _tokenAmount.add(_tokenBonusAmount));
     }
 }

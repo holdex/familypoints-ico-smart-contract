@@ -5,7 +5,7 @@ const expectThrow = require('./helpers/expectThrow');
 
 const TOKEN_NAME = 'FamilyPoints Token';
 const TOKEN_SYMBOL = 'FPT';
-const INITIAL_SUPPLY = web3.toBigNumber('2.25e26');
+const INITIAL_SUPPLY = web3.toBigNumber('5e26');
 const DECIMALS = web3.toBigNumber('18');
 
 async function deployToken() {

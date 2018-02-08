@@ -62,8 +62,8 @@ contract('CrowdSale', function (accounts) {
     const ether = web3.toBigNumber(web3.toWei(1, 'ether'));
     const defaultTokenPrice = ether.div(100);
 
-    /** A total tokens cap for the CrowdSale. A 65% from the total issue (225M) with 18 token decimals */
-    const tokenTotalPurchaseCap = web3.toBigNumber('1.4625e26');
+    /** A total tokens cap for the CrowdSale. A 65% from the total issue (325M) with 18 token decimals */
+    const tokenTotalPurchaseCap = web3.toBigNumber('3.25e26');
 
     const stageBonusPercent = 30;
     const leaderBonusPercent = 4;

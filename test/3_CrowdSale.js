@@ -146,10 +146,10 @@ contract('CrowdSale', function (accounts) {
                 (await crowdSaleInstance.getAvailableTokensToSell()).toString()
             );
 
-            //Tokens was sent
+            //Tokens should not be sent instantly, only after finalize
             assert.equal(
                 (await tokenInstance.balanceOf(investor)).toString(),
-                baseTokenAmount.plus(bonusTokenAmount).toString()
+                "0"
             );
 
             //Ether was received by wallet from the investor
@@ -234,10 +234,10 @@ contract('CrowdSale', function (accounts) {
                 (await crowdSaleInstance.getAvailableTokensToSell()).toString()
             );
 
-            //Tokens was sent
+            //Tokens should not be sent instantly, only after finalize
             assert.equal(
                 (await tokenInstance.balanceOf(investor)).toString(),
-                baseTokenAmount.plus(bonusTokenAmount).toString()
+                "0"
             );
 
             //Ether was received by wallet from the investor
@@ -305,10 +305,10 @@ contract('CrowdSale', function (accounts) {
                 (await crowdSaleInstance.getAvailableTokensToSell()).toString()
             );
 
-            //Tokens was sent
+            //Tokens should not be sent instantly, only after finalize
             assert.equal(
                 (await tokenInstance.balanceOf(investor)).toString(),
-                baseTokenAmount.plus(bonusTokenAmount).toString()
+                "0"
             );
 
             //Ether was received by wallet from the investor
@@ -364,7 +364,7 @@ contract('CrowdSale', function (accounts) {
             const leaderBonusTokensAmount = await bonusStrategyInstance.calculateLeaderBonus(baseTokenAmount);
 
             const initialWalletBalance = web3.eth.getBalance(wallet);
-            const leaderInitialTokensBalance = await tokenInstance.balanceOf(leader);
+            const leaderInitialTokensBalance = (await crowdSaleInstance.tokenAmountOf(leader)).add(await crowdSaleInstance.tokenBonusSentOf(leader));
 
             //Give 1 ether. Should get 100 tokens + bonus.
             const tokensReceiver = getParamFromTransactionEvent(
@@ -391,10 +391,10 @@ contract('CrowdSale', function (accounts) {
                 (await crowdSaleInstance.getAvailableTokensToSell()).toString()
             );
 
-            //Tokens was sent
+            //Tokens should not be sent instantly, only after finalize
             assert.equal(
                 (await tokenInstance.balanceOf(investor)).toString(),
-                baseTokenAmount.plus(bonusTokenAmount).toString()
+                "0"
             );
 
             //Ether was received by wallet from the investor
@@ -403,11 +403,11 @@ contract('CrowdSale', function (accounts) {
                 (await web3.eth.getBalance(wallet)).toString()
             );
 
-            //Affiliate got tokens for the peer
+            //Affiliate should not get tokens for the peer instantly, only after finalize
             assert.equal(
-                leaderInitialTokensBalance.plus(leaderBonusTokensAmount).toString(),
-                (await tokenInstance.balanceOf(leader)).toString()
-            )
+                (await tokenInstance.balanceOf(leader)).toString(),
+                "0"
+            );
         } catch (err) {
             assert(false, err.message)
         }

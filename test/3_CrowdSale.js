@@ -609,7 +609,7 @@ contract('CrowdSale', function (accounts) {
         try {
             const tokensToSend = web3.toBigNumber('2e20'); //200 tokens
 
-            //Affiliate should make investment first
+            //Investor should make investment first
             await crowdSaleInstance.invest("0x00", leaderUuidBytes, {from: investor, value: ether});
             const initialTokenAmount = await crowdSaleInstance.tokenBonusSentOf(investor);
             const initialTokenAmountOfAccount = await crowdSaleInstance.tokenBonusSentOfAccount(leaderUuidBytes);
@@ -627,6 +627,19 @@ contract('CrowdSale', function (accounts) {
                 (await crowdSaleInstance.tokenBonusSentOfAccount(leaderUuidBytes)).sub(initialTokenAmountOfAccount).toString(),
                 tokensToSend.toString()
             );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Exception when send token bonus exceeds allowed cap', async function () {
+        try {
+            //Investor should make investment first
+            await crowdSaleInstance.invest("0x00", leaderUuidBytes, {from: investor, value: ether});
+
+            expectThrow(
+                crowdSaleInstance.sendBonus(tokenTotalPurchaseCap, investor, {from: owner})
+            )
         } catch (err) {
             assert(false, err.message)
         }

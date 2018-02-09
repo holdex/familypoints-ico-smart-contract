@@ -604,4 +604,61 @@ contract('CrowdSale', function (accounts) {
             assert(false, err.message)
         }
     });
+
+    it('Send token bonus to someone that did already invest', async function () {
+        try {
+            const tokensToSend = web3.toBigNumber('2e20'); //200 tokens
+
+            //Affiliate should make investment first
+            await crowdSaleInstance.invest("0x00", leaderUuidBytes, {from: investor, value: ether});
+            const initialTokenAmount = await crowdSaleInstance.tokenBonusSentOf(investor);
+            const initialTokenAmountOfAccount = await crowdSaleInstance.tokenBonusSentOfAccount(leaderUuidBytes);
+
+            await crowdSaleInstance.sendBonus(tokensToSend, investor, {from: owner});
+
+            //Tokens bonus balance
+            assert.equal(
+                (await crowdSaleInstance.tokenBonusSentOf(investor)).sub(initialTokenAmount).toString(),
+                tokensToSend.toString()
+            );
+
+            //Tokens bonus balance of account
+            assert.equal(
+                (await crowdSaleInstance.tokenBonusSentOfAccount(leaderUuidBytes)).sub(initialTokenAmountOfAccount).toString(),
+                tokensToSend.toString()
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Exception when send token bonus to someone that did not invest anything yet', async function () {
+        try {
+            expectThrow(
+                crowdSaleInstance.sendBonus(web3.toBigNumber('1'), investor, {from: owner})
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Exception when send 0 (zero) token bonus', async function () {
+        try {
+            expectThrow(
+                crowdSaleInstance.sendBonus(web3.toBigNumber('0'), investor, {from: owner})
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Exception when send token bonus from non-owner', async function () {
+        try {
+            expectThrow(
+                crowdSaleInstance.sendBonus(web3.toBigNumber('1'), investor, {from: owner})
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
 });

@@ -279,7 +279,7 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
      */
 	function sendBonus(uint256 _tokensBonusAmount, address _who) onlyOwner external {
 		require(_tokensBonusAmount > 0);
-		require(tokenBonusSentOf[_who] > 0);
+		require(tokenAmountOf[_who] > 0);
 		require(isNotReachedTokensTotalPurchaseCap(_tokensBonusAmount));
 
 		//Update counters

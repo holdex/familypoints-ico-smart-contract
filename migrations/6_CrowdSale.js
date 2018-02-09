@@ -12,6 +12,7 @@ module.exports = async function (deployer) {
         FamilyPointsToken.address,
         PricingStrategy.address,
         BonusStrategy.address,
+        90 * 24 * 3600, // 90 days
         wallet
     );
 

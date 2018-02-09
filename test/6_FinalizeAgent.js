@@ -10,7 +10,7 @@ const expectThrow = require('./helpers/expectThrow');
 const uuidParse = require('uuid-parse');
 
 async function deployCrowdSaleTest(token, pricingStrategy, bonusStrategy, walletAddress) {
-    return CrowdSale.new(token, pricingStrategy, bonusStrategy, walletAddress);
+    return CrowdSale.new(token, pricingStrategy, bonusStrategy, 0, walletAddress);
 }
 
 async function deployPricingStrategy(tokenPrice) {

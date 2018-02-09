@@ -10,8 +10,8 @@ const expectThrow = require('./helpers/expectThrow');
 const getParamFromTransactionEvent = require('./helpers/getParamFromTxEvent');
 const uuidParse = require('uuid-parse');
 
-async function deployCrowdSaleTest(token, pricingStrategy, bonusStrategy, walletAddress) {
-    return CrowdSale.new(token, pricingStrategy, bonusStrategy, walletAddress);
+async function deployCrowdSaleTest(token, pricingStrategy, bonusStrategy, bonusReleaseDelaySec, walletAddress) {
+    return CrowdSale.new(token, pricingStrategy, bonusStrategy, bonusReleaseDelaySec, walletAddress);
 }
 
 async function deployPricingStrategy(tokenPrice) {
@@ -58,6 +58,8 @@ contract('CrowdSale', function (accounts) {
 
     const wallet = accounts[5];
 
+    const bonusReleaseDelaySec = 5;
+
     const tokenDecimals = 18;
     const ether = web3.toBigNumber(web3.toWei(1, 'ether'));
     const defaultTokenPrice = ether.div(100);
@@ -83,6 +85,7 @@ contract('CrowdSale', function (accounts) {
             tokenInstance.address,
             pricingStrategyInstance.address,
             bonusStrategyInstance.address,
+            bonusReleaseDelaySec,
             wallet
         );
 
@@ -669,6 +672,62 @@ contract('CrowdSale', function (accounts) {
         try {
             expectThrow(
                 crowdSaleInstance.sendBonus(web3.toBigNumber('1'), investor, {from: investor})
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Release bonus tokens after finalization did pass bonus release delay', async function () {
+        const baseTokenAmount  = await pricingStrategyInstance.calculateTokenAmount(ether, tokenDecimals);
+        const bonusTokenAmount = await bonusStrategyInstance.calculateCommonBonus(baseTokenAmount, ether);
+
+        await  crowdSaleInstance.invest(0x00, investorUuidBytes, {from: investor, value: ether});
+        await crowdSaleInstance.finalize();
+
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve(crowdSaleInstance.releaseBonusTokens({from: owner}));
+                tokenInstance.balanceOf(investor).then(function (b) {
+                    assert.equal(
+                        b.toString(),
+                        baseTokenAmount.add(bonusTokenAmount).toString()
+                    )
+                });
+            }, (bonusReleaseDelaySec + 2) * 1000); // 2 sec are given for blockchain processing
+        });
+    });
+
+    it('Exception when crowdsale finalization did not pass bonus release delay', async function () {
+        await crowdSaleInstance.finalize();
+
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve(crowdSaleInstance.releaseBonusTokens({from: owner}));
+            }, (bonusReleaseDelaySec - 1) * 1000); // bonus delay not elapsed
+        }).then(function () {
+            throw("Expected error")
+        }).catch(function (r) {
+            if (r === "Expected error") {
+                throw r;
+            }
+        });
+    });
+
+    it('Exception when crowdsale not finalized', async function () {
+        try {
+            expectThrow(
+                crowdSaleInstance.releaseBonusTokens({from: owner})
+            );
+        } catch (err) {
+            assert(false, err.message)
+        }
+    });
+
+    it('Exception when send from non-owner', async function () {
+        try {
+            expectThrow(
+                crowdSaleInstance.releaseBonusTokens({from: investor})
             );
         } catch (err) {
             assert(false, err.message)

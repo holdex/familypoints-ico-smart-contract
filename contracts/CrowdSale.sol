@@ -30,6 +30,8 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
 
     uint256 public finalizedTimestamp;
 
+    uint256 public bonusReleaseDelay;
+
     bool isAffiliateSystemSet = false;
 
     address public wallet;
@@ -78,10 +80,11 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
     /**
      * @dev CrowdSale constructor
      */
-    function CrowdSale(TokenInterface _token, PricingStrategyInterface _pricingStrategy, BonusStrategyInterface _bonusStrategy, address _wallet) {
+    function CrowdSale(TokenInterface _token, PricingStrategyInterface _pricingStrategy, BonusStrategyInterface _bonusStrategy, uint256 _bonusReleaseDelaySec, address _wallet) {
         token = _token;
         setPricingStrategy(_pricingStrategy);
         setBonusStrategy(_bonusStrategy);
+	    bonusReleaseDelay = _bonusReleaseDelaySec * 1 seconds;
         setWallet(_wallet);
     }
 
@@ -222,6 +225,20 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
 		    token.transferFrom(owner, investor, tokenAmountOf[investor]);
 	    }
     }
+
+	/**
+     * @dev Release bonus tokens to investors, but only after the bonus release delay
+     */
+	function releaseBonusTokens() onlyOwner external {
+		require(isFinalized);
+		require(finalizedTimestamp + bonusReleaseDelay < now);
+
+		address investor;
+		for(uint i = 0; i < investorsList.length; i++) {
+			investor = investorsList[i];
+			token.transferFrom(owner, investor, tokenBonusSentOf[investor]);
+		}
+	}
 
     /**
      * @dev Set a minimal value in wei. Set zero to reset.

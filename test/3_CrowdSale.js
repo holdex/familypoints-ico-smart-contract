@@ -668,7 +668,7 @@ contract('CrowdSale', function (accounts) {
     it('Exception when send token bonus from non-owner', async function () {
         try {
             expectThrow(
-                crowdSaleInstance.sendBonus(web3.toBigNumber('1'), investor, {from: owner})
+                crowdSaleInstance.sendBonus(web3.toBigNumber('1'), investor, {from: investor})
             );
         } catch (err) {
             assert(false, err.message)

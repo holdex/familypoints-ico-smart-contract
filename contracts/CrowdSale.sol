@@ -40,7 +40,7 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
 
     uint256 public tokensBonusSent = 0;
 
-    uint256 public investorCount = 0;
+	address[] public investorsList;
 
     /** Invested by users. */
     mapping (address => uint256) public investedAmountOf;
@@ -123,7 +123,7 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
 
         if (investedAmountOf[receiver] == 0) {
             // A new investor
-            investorCount++;
+	        investorsList.push(receiver);
         }
 
         // Update investor counters.
@@ -140,9 +140,6 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
         weiRaised = weiRaised.add(weiAmount);
         tokensSold = tokensSold.add(baseTokenAmount);
         tokensBonusSent = tokensBonusSent.add(tokenBonus);
-
-        //Assign tokens
-        assignTokens(receiver, baseTokenAmount, tokenBonus);
 
         //Send ether to RefundVault
         forwardFunds(weiAmount);
@@ -210,7 +207,7 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
     }
 
     /**
-     * @dev Finalize the CrowdSale and burn all rest tokens from the pool
+     * @dev Finalize the CrowdSale, burn all rest tokens from the pool, and send the tokens to the investors
      */
     function finalize() onlyOwner public {
         require(!isFinalized);
@@ -218,6 +215,12 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
         finalizeAgent.finalize();
         isFinalized = true;
         finalizedTimestamp = now;
+
+	    address investor;
+	    for(uint i = 0; i < investorsList.length; i++) {
+		    investor = investorsList[i];
+		    token.transferFrom(owner, investor, tokenAmountOf[investor]);
+	    }
     }
 
     /**
@@ -268,8 +271,6 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
             //Update counters
             tokensBonusSent = tokensBonusSent.add(leaderBonus);
             tokenBonusSentOf[_leader] = tokenBonusSentOf[_leader].add(leaderBonus);
-
-            token.transferFrom(owner, _leader, leaderBonus);
         }
     }
 
@@ -303,12 +304,5 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
      */
     function forwardFunds(uint256 _weiAmount) internal {
         wallet.transfer(_weiAmount);
-    }
-
-    /**
-     * @dev Assign tokens to the investor
-     */
-    function assignTokens(address _receiver, uint256 _tokenAmount, uint256 _tokenBonusAmount) internal {
-        token.transferFrom(owner, _receiver, _tokenAmount.add(_tokenBonusAmount));
     }
 }

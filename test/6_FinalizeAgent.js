@@ -99,15 +99,14 @@ contract('FinalizeAgentTest', function (accounts) {
             await finalizeAgentInstance.finalize();
 
             assert.equal(
-                initialOwnerBalance.sub(tokensWillNotBeBurned),
-                (await tokenInstance.balanceOf(owner))
-                    .add(tokenTotalPurchaseCap.sub(tokensWillNotBeBurned)).toString()
+                (await tokenInstance.balanceOf(owner)).sub(tokensWillNotBeBurned).toString(),
+                initialOwnerBalance.sub(tokenTotalPurchaseCap).toString()
             );
 
             assert.equal(
-                (await tokenInstance.balanceOf(investor)).toString(),
+                (await crowdSaleInstance.tokenAmountOf(investor)).add(await crowdSaleInstance.tokenBonusSentOf(investor)).toString(),
                 tokensWillNotBeBurned.toString()
-            )
+            );
         } catch (err) {
             assert(false, err.message);
         }

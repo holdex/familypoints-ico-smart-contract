@@ -274,6 +274,21 @@ contract CrowdSale is CrowdSaleInterface, Pausable, Claimable, HasNoEther {
         }
     }
 
+	/**
+     * @dev Send bonus to someone
+     */
+	function sendBonus(uint256 _tokensBonusAmount, address _who) onlyOwner external {
+		require(_tokensBonusAmount > 0);
+		require(tokenAmountOf[_who] > 0);
+		require(isNotReachedTokensTotalPurchaseCap(_tokensBonusAmount));
+
+		//Update counters
+		tokensBonusSent = tokensBonusSent.add(_tokensBonusAmount);
+		tokenBonusSentOf[_who] = tokenBonusSentOf[_who].add(_tokensBonusAmount);
+		bytes16 account = accountAddress[_who];
+		tokenBonusSentOfAccount[account] = tokenBonusSentOfAccount[account].add(_tokensBonusAmount);
+	}
+
     /**
      * @dev Wrapper for checking leader
      */

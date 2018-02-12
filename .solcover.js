@@ -3,5 +3,5 @@ module.exports = {
     norpc: true,
     skipFiles: ['Migrations.sol'],
     copyNodeModules: true,
-    testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage',
+    testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/ganache-cli test --network coverage',
 };

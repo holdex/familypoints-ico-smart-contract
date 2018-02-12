@@ -6,7 +6,7 @@ const CrowdSale = artifacts.require('CrowdSale.sol');
 const FinalizeAgent = artifacts.require('FinalizeAgent.sol');
 
 module.exports = async function (deployer) {
-    const wallet = "";
+    const wallet = "YOUR WALLET ADDRESS GOES HERE";
 
     deployer.deploy(CrowdSale,
         FamilyPointsToken.address,

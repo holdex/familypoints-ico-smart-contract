@@ -4,39 +4,34 @@
 trap cleanup EXIT
 
 cleanup() {
-  # Kill the testrpc instance that we started (if we started one).
-  if [ -n "$testrpc_pid" ]; then
-    kill -9 $testrpc_pid
+  # Kill the ganache-cli instance that we started (if we started one).
+  if [ -n "$ganache_cli_pid" ]; then
+    kill -9 $ganache_cli_pid
   fi
 }
 
-testrpc_running() {
+ganache_cli_running() {
   nc -z localhost 8444
 }
 
-if testrpc_running; then
-  echo "Using existing testrpc instance"
+if ganache_cli_running; then
+  echo "Using existing ganache-cli instance"
 else
-  echo "Starting testrpc to run unit tests"
+  echo "Starting ganache-cli to run unit tests"
   # We define 10 accounts with balance 1M ether, needed for high-value tests.
-  ./node_modules/.bin/testrpc --gasLimit 0xfffffffffff --port 8444 \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501200,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501201,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501202,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501203,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501204,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501205,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501206,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501207,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501208,1000000000000000000000000"  \
-    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501209,1000000000000000000000000"  \
+  ./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --port 8444 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501200,1000000000000000000000000" -u 0 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501201,1000000000000000000000000" -u 1 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501202,1000000000000000000000000" -u 2 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501203,1000000000000000000000000" -u 3 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501204,1000000000000000000000000" -u 4 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501205,1000000000000000000000000" -u 5 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501206,1000000000000000000000000" -u 6 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501207,1000000000000000000000000" -u 7 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501208,1000000000000000000000000" -u 8 \
+    --account="0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501209,1000000000000000000000000" -u 9 \
   > /dev/null &
-  testrpc_pid=$!
+  ganache_cli_pid=$!
 fi
 
-./node_modules/.bin/truffle test ./test/1_FamilyPointsToken.js
-./node_modules/.bin/truffle test ./test/2_PricingStrategyTest.js
-./node_modules/.bin/truffle test ./test/3_CrowdSale.js
-./node_modules/.bin/truffle test ./test/4_BonusStrategy.js
-./node_modules/.bin/truffle test ./test/5_AffiliateSystem.js
-./node_modules/.bin/truffle test ./test/6_FinalizeAgent.js
+./node_modules/.bin/truffle test

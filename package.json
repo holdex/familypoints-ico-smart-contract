@@ -1,34 +1,34 @@
 {
-    "name": "familypoints-smart-contracts",
-    "version": "1.5.0",
-    "description": "A set of Ethereum smart contracts for Familypoints Crowdsale",
-    "main": "truffle.js",
-    "directories": {
-        "test": "test"
-    },
-    "scripts": {
-        "test": "sh run-tests.sh",
-        "compile": "./node_modules/.bin/truffle compile",
-        "lint": "sh lint.sh",
-        "coverage": "sh coverage.sh",
-        "testrpc": "sh testrpc.sh"
-    },
-    "keywords": [
-        "solidity",
-        "ethereum",
-        "smart contracts"
-    ],
-    "author": "Dmitriy Lezhnev <dmitriy@familypoints.io>",
-    "license": "WTFPL",
-    "dependencies": {
-        "zeppelin-solidity": "1.3.0"
-    },
-    "devDependencies": {
-        "truffle": "3.4.11",
-        "ethereumjs-testrpc": "4.1.3",
-        "uuid-parse": "^1.0.0",
-        "solcheck": "^0.1.3",
-        "solidity-coverage": "^0.2.5",
-        "solium": "^1.0.0"
-    }
+	"name": "familypoints-smart-contracts",
+	"version": "1.5.0",
+	"description": "A set of Ethereum smart contracts for Familypoints Crowdsale",
+	"main": "truffle.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "sh run-tests.sh",
+		"compile": "./node_modules/.bin/truffle compile",
+		"lint": "sh lint.sh",
+		"coverage": "sh coverage.sh",
+		"ganache-cli": "sh ganache-cli.sh"
+	},
+	"keywords": [
+		"solidity",
+		"ethereum",
+		"smart contracts"
+	],
+	"author": "Dmitriy Lezhnev <dmitriy@familypoints.io>",
+	"license": "WTFPL",
+	"dependencies": {
+		"zeppelin-solidity": "1.3.0"
+	},
+	"devDependencies": {
+		"truffle": "4.0.6",
+		"ganache-cli": "6.1.0-beta.0",
+		"uuid-parse": "^1.0.0",
+		"solcheck": "^0.1.3",
+		"solidity-coverage": "^0.2.5",
+		"solium": "^1.0.0"
+	}
 }
